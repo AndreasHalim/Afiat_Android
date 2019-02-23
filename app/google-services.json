@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "269015646526",
+    "firebase_url": "https://afiat-feb62.firebaseio.com",
+    "project_id": "afiat-feb62",
+    "storage_bucket": "afiat-feb62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269015646526:android:96d6c3704b619892",
+        "android_client_info": {
+          "package_name": "com.example.afiat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269015646526-1vcr54cjj2o9vm476o04tmub7bbpcc8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.afiat",
+            "certificate_hash": "6917dd3c6c4818d2075117382eac2e7bf2530cc4"
+          }
+        },
+        {
+          "client_id": "269015646526-8d4fioshot1s5i7vpth1k6v8vlp958n7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_PxIuLJwPPstXy3ukZupQOIhuSpHy_ww"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269015646526-8d4fioshot1s5i7vpth1k6v8vlp958n7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
