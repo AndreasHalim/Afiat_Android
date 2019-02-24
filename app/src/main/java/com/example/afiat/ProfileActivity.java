@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ProfileActivity.this, HomeScreen.class));
+                startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
                 finish();
             }
         });

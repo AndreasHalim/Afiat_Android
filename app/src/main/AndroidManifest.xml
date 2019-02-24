@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".HomeScreen" />
+        <activity android:name=".HomeActivity" />
         <activity android:name=".ProfileActivity" />
         <receiver
             android:name=".service.StarterBroadcast"

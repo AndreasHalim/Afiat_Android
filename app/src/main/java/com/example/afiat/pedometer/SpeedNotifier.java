@@ -27,7 +27,7 @@ public class SpeedNotifier implements PaceNotifier.Listener {
     public void paceChanged(int value) {
         mSpeed =                // kilometers / hour
             value * STEP_LENGTH // centimeters / minute
-            / 100000f * 60f;    // centimeters/kilometer
+            / 100000f * 60f;    // centimeters / kilometer
         notifyListener();
     }
 }

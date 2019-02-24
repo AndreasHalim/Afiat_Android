@@ -28,10 +28,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class WorkerService extends Service {
+    public static final int WORKER_SERVICE_ID = 2;
     public static final String RESTART = "restart_service";
     public static Boolean running = false;
     private static int mStepCount = 0;
-    private static float mSpeed = 0;
+    private static float mSpeedSum = 0;
+    private static int mSpeedCounter = 0;
     private static float mDistance = 0;
     private static float mLight = 0;
     /*
@@ -48,14 +50,20 @@ public class WorkerService extends Service {
     private final IBinder mBinder = new WorkerService.ServiceBinder();
 
     private OnSensorChangeListener mCallback;
+    private StepDetector mStepDetector;
     private LocationNotifier mLocationNotifier;
+    private OtherDetector mOtherDetector;
 
     public void registerCallback(OnSensorChangeListener cb) {
         mCallback = cb;
         if (mCallback != null) {
             mCallback.stepsChanged(mStepCount);
             mCallback.distanceChanged(mDistance);
-            mCallback.speedChanged(mSpeed);
+            if (mSpeedCounter == 0) {
+                mCallback.speedChanged(0);
+            } else {
+                mCallback.speedChanged(mSpeedSum/mSpeedCounter);
+            }
             mCallback.onLightChange(mLight);
             mCallback.onGravityChange(mGravity[0], mGravity[1], mGravity[2]);
             mCallback.locationUpdated(position[0], position[1], locationLastStatus);
@@ -77,7 +85,7 @@ public class WorkerService extends Service {
     public void onCreate() {
         super.onCreate();
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        startForeground(2, ServiceNotificationBuilder.Build(manager, this));
+        startForeground(WORKER_SERVICE_ID, ServiceNotificationBuilder.Build(manager, this));
         running = true;
     }
 
@@ -85,10 +93,8 @@ public class WorkerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
-        Log.i("AFIAT", "Service is started!");
-
         mLocationNotifier = setupLocationProvider();
-        StepDetector mStepDetector = setupStepDetector();
+        mStepDetector = setupStepDetector();
         StepDisplayer mStepDisplayer = setupStepDisplayer();
         PaceNotifier mPaceNotifier = setupPaceNotifier();
         SpeedNotifier mSpeedNotifier = setupSpeedNotifier();
@@ -99,7 +105,7 @@ public class WorkerService extends Service {
         mPaceNotifier.addListener(mSpeedNotifier);
         mStepDetector.addStepListener(mDistanceNotifier);
 
-        OtherDetector mOtherDetector = setupOtherDetector();
+        mOtherDetector = setupOtherDetector();
         mOtherDetector.addListener(new OtherListener() {
             @Override
             public void onLightChange(float lightLevel) {
@@ -126,17 +132,27 @@ public class WorkerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        Log.d("TEST-SERVICE", "onDestroy");
         if (running) {
-            Log.i("AFIAT", "Service is restarted");
+            Log.d("TEST-SERVICE", "onDestroy");
             start(this);
         } else {
-            Log.i("AFIAT", "Service is destroyed!");
+            Log.d("TEST-SERVICE", "fully destroyed");
         }
     }
 
     public void activateLocationListener() {
         mLocationNotifier.activateLocationListener();
+    }
+
+    public void stop() {
+        running = false;
+        handler = null;
+        SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorManager.unregisterListener(mStepDetector);
+        mSensorManager.unregisterListener(mOtherDetector);
+        mLocationNotifier.stop();
+        this.stopService(new Intent(this, WorkerService.class));
     }
 
     private static void start(Context context) {
@@ -229,9 +245,11 @@ public class WorkerService extends Service {
                     Bundle bundle = new Bundle();
                     bundle.putString("message", "Light sensor is not exists!");
                     msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    if (handler != null) {
+                        handler.sendMessage(msg);
+                    }
                 }
-            }, 1000);
+            }, 3000);
         } else {
             (new Timer()).schedule(new TimerTask() {
                 @Override
@@ -240,7 +258,9 @@ public class WorkerService extends Service {
                     Bundle bundle = new Bundle();
                     bundle.putString("message", "Light sensor is exists!");
                     msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    if (handler != null) {
+                        handler.sendMessage(msg);
+                    }
                 }
             }, 3000);
 
@@ -292,12 +312,13 @@ public class WorkerService extends Service {
     private SpeedNotifier setupSpeedNotifier() {
         SpeedNotifier.Listener mSpeedListener = new SpeedNotifier.Listener() {
             public void valueChanged(float value) {
-                mSpeed = value;
+                mSpeedSum += value;
+                mSpeedCounter++;
                 passValue();
             }
             public void passValue() {
                 if (mCallback != null) {
-                    mCallback.speedChanged(mSpeed);
+                    mCallback.speedChanged(mSpeedSum/mSpeedCounter);
                 }
             }
         };
@@ -309,7 +330,7 @@ public class WorkerService extends Service {
     private DistanceNotifier setupDistanceNotifier() {
         DistanceNotifier.Listener mDistanceListener = new DistanceNotifier.Listener() {
             public void valueChanged(float value) {
-                mDistance = value;
+                mDistance += value;
                 passValue();
             }
             public void passValue() {

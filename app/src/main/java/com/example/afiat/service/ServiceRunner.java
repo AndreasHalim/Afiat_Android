@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 public class ServiceRunner {
     private Context context;
@@ -19,7 +20,7 @@ public class ServiceRunner {
     }
 
     public void bind() {
-        if (!isMyServiceRunning(WorkerService.class)) {
+        if (!isWorkerServiceRunning()) {
             startService(context);
             bindStepService(context, callback);
         } else {
@@ -28,11 +29,33 @@ public class ServiceRunner {
     }
 
     public void unbind() {
-        context.unbindService(mConnection);
+        if (mConnection != null) {
+            context.unbindService(mConnection);
+            mConnection = null;
+        }
+    }
+
+    public void stop() {
+        if (mWorkerService != null) {
+            unbind();
+            mWorkerService.stop();
+            mConnection = null;
+            mWorkerService = null;
+        }
     }
 
     public WorkerService getService() {
         return this.mWorkerService;
+    }
+
+    public boolean isWorkerServiceRunning() {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (WorkerService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void startService(Context context) {
@@ -56,15 +79,5 @@ public class ServiceRunner {
 
         context.bindService(new Intent(context,
                 WorkerService.class), mConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

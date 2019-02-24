@@ -31,6 +31,7 @@ public class LocationNotifier {
     private String locationProvider;
     private Location currentLocation = null;
     private final Object lock = new Object();
+    private LocationListener listener;
 
     public LocationNotifier(Context context) {
         this.context = context;
@@ -55,6 +56,10 @@ public class LocationNotifier {
     }
 
     public void stop() {
+        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (listener != null) {
+            manager.removeUpdates(listener);
+        }
         running = false;
     }
 
@@ -91,7 +96,7 @@ public class LocationNotifier {
 
         locationProvider = manager.getBestProvider(providerCriteria, true);
 
-        LocationListener listener = new LocationListener() {
+        listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 updateCurrentLocation(location);

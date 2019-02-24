@@ -119,6 +119,11 @@
     <string name="incorrect_step_length">Incorrect step length format! Go to the Settings to change it!</string>
     <string name="quit">Quit</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Main Fragment -->
+    <string name="steps_title">STEPS</string>
+    <string name="speed_title">METER / HOUR</string>
+    <string name="distance_title">KILOMETER</string>
+    <string name="turn_on">Turn On</string>
+    <string name="turn_off">Turn Off</string>
+    <string name="default_value">0</string>
 </resources>
