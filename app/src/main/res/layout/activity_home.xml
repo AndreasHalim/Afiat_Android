@@ -18,17 +18,22 @@
         android:textSize="36sp"
         android:textStyle="bold" />
 
-
     <Button
-        android:id="@+id/signout"
+        android:id="@+id/sensor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/logout" />
+        android:text="Sensor" />
 
     <Button
         android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Profile" />
+
+    <Button
+        android:id="@+id/signout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/logout" />
 
 </LinearLayout>

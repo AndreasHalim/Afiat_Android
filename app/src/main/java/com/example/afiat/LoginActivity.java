@@ -37,11 +37,13 @@ public class LoginActivity extends AppCompatActivity {
     private final static int RC_SIGN_IN = 123;
     GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth.AuthStateListener mAuthListner;
+
     @Override
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListner);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +54,12 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         setContentView(R.layout.activity_login);
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        Button ahlogin = (Button) findViewById(R.id.ah_login);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        TextView btnSignIn = (TextView) findViewById(R.id.sign_in_button);
-        button = (SignInButton) findViewById(R.id.sign_in_google);
+        inputEmail = findViewById(R.id.email);
+        inputPassword = findViewById(R.id.password);
+        Button ahlogin = findViewById(R.id.ah_login);
+        progressBar = findViewById(R.id.progressBar);
+        TextView btnSignIn = findViewById(R.id.sign_in_button);
+        button = findViewById(R.id.sign_in_google);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,15 +134,21 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        Log.d("TEST", "HELLO");
         if (requestCode == RC_SIGN_IN) {
+            Log.d("TEST", "AAAA");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                Log.d("TEST", "BBB");
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                Intent intent = new Intent(getApplicationContext(), SampleActivity.class);
+                startActivity(intent);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Log.d("TEST", e.toString());
+                e.printStackTrace();
                 Log.w(TAG, "Google sign in failed", e);
                 // ...
             }

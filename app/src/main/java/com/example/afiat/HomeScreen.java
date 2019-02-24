@@ -12,6 +12,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListner;
+
+    private Button btnSensor;
+    private Button btnProfile;
+    private Button btnSignOut;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -21,7 +26,11 @@ public class HomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Button button = (Button) findViewById(R.id.signout);
+
+        btnSensor = findViewById(R.id.sensor);
+        btnProfile = findViewById(R.id.profile);
+        btnSignOut = findViewById(R.id.signout);
+
         mAuth = FirebaseAuth.getInstance();
         mAuthListner = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -32,19 +41,31 @@ public class HomeScreen extends AppCompatActivity {
                 }
             }
         };
-        button.setOnClickListener(new View.OnClickListener() {
+
+        setClickListener();
+    }
+
+    private void setClickListener() {
+        btnSensor.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mAuth.signOut();
+            public void onClick(View view) {
+                startActivity(new Intent(HomeScreen.this, SampleActivity.class));
+                finish();
             }
         });
 
-        Button profile = findViewById(R.id.profile);
-        profile.setOnClickListener(new View.OnClickListener() {
+        btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeScreen.this, ProfileActivity.class));
                 finish();
+            }
+        });
+
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
             }
         });
     }

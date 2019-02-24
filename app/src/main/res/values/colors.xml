@@ -6,4 +6,8 @@
     <color name="startblue">@color/colorAccent</color>
     <color name="endblue">@color/colorPrimary</color>
     <color name="graylight">#E9E2E2</color>
+
+    <!-- Pedometer -->
+    <color name="screen_background">#000000</color>
+    <color name="display_background">#ffffff</color>
 </resources>
