@@ -25,6 +25,10 @@
     <string name="failed">Login failed</string>
     <string name="success">Login successful</string>
 
+    <!-- Firebase Cloud Messaging -->
+    <string name="channel_name_sport_point">Sport Point</string>
+    <string name="channel_desc_sport_point">channel of nearby sport point notification</string>
+
     <!-- Pedometer -->
     <string name="notification_subtitle">Counting your steps</string>
     <string name="started">Pedometer started.</string>

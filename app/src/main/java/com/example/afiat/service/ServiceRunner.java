@@ -9,7 +9,7 @@ import android.os.IBinder;
 
 public class ServiceRunner {
     private Context context;
-    private SensorService mSensorService;
+    private WorkerService mWorkerService;
     private OnSensorChangeListener callback;
     private ServiceConnection mConnection;
 
@@ -19,7 +19,7 @@ public class ServiceRunner {
     }
 
     public void bind() {
-        if (!isMyServiceRunning(SensorService.class)) {
+        if (!isMyServiceRunning(WorkerService.class)) {
             startService(context);
             bindStepService(context, callback);
         } else {
@@ -27,9 +27,17 @@ public class ServiceRunner {
         }
     }
 
+    public void unbind() {
+        context.unbindService(mConnection);
+    }
+
+    public WorkerService getService() {
+        return this.mWorkerService;
+    }
+
     private void startService(Context context) {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(SensorService.RESTART);
+        broadcastIntent.setAction(WorkerService.RESTART);
         broadcastIntent.setClass(context, StarterBroadcast.class);
         context.sendBroadcast(broadcastIntent);
     }
@@ -37,17 +45,17 @@ public class ServiceRunner {
     private void bindStepService(Context context, final OnSensorChangeListener callback) {
         mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
-                mSensorService = ((SensorService.ServiceBinder) service).getService();
-                mSensorService.registerCallback(callback);
+                mWorkerService = ((WorkerService.ServiceBinder) service).getService();
+                mWorkerService.registerCallback(callback);
             }
 
             public void onServiceDisconnected(ComponentName className) {
-                mSensorService = null;
+                mWorkerService = null;
             }
         };
 
         context.bindService(new Intent(context,
-                SensorService.class), mConnection, Context.BIND_AUTO_CREATE);
+                WorkerService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -58,9 +66,5 @@ public class ServiceRunner {
             }
         }
         return false;
-    }
-
-    public void unbind() {
-        context.unbindService(mConnection);
     }
 }

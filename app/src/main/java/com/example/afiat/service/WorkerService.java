@@ -14,6 +14,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.afiat.location.LocationNotifier;
+import com.example.afiat.location.OnLocationUpdated;
 import com.example.afiat.othersensor.OtherListener;
 import com.example.afiat.pedometer.DistanceNotifier;
 import com.example.afiat.pedometer.PaceNotifier;
@@ -25,20 +27,28 @@ import com.example.afiat.othersensor.OtherDetector;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SensorService extends Service {
+public class WorkerService extends Service {
     public static final String RESTART = "restart_service";
     public static Boolean running = false;
     private static int mStepCount = 0;
     private static float mSpeed = 0;
     private static float mDistance = 0;
     private static float mLight = 0;
+    /*
+     * mGravity[] = {x-axis, y-axis, z-axis}
+     */
     private static float[] mGravity = new float[3];
-
+    /*
+     * position[] = {latitude, longitude}
+     */
+    private static double[] position = new double[2];
+    private static short locationLastStatus = LocationNotifier.STATUS_NO_PROVIDER;
     private static  ToastHandler handler;
 
-    private final IBinder mBinder = new SensorService.ServiceBinder();
+    private final IBinder mBinder = new WorkerService.ServiceBinder();
 
     private OnSensorChangeListener mCallback;
+    private LocationNotifier mLocationNotifier;
 
     public void registerCallback(OnSensorChangeListener cb) {
         mCallback = cb;
@@ -48,12 +58,13 @@ public class SensorService extends Service {
             mCallback.speedChanged(mSpeed);
             mCallback.onLightChange(mLight);
             mCallback.onGravityChange(mGravity[0], mGravity[1], mGravity[2]);
+            mCallback.locationUpdated(position[0], position[1], locationLastStatus);
         }
     }
 
     class ServiceBinder extends Binder {
-        SensorService getService() {
-            return SensorService.this;
+        WorkerService getService() {
+            return WorkerService.this;
         }
     }
 
@@ -76,6 +87,7 @@ public class SensorService extends Service {
 
         Log.i("AFIAT", "Service is started!");
 
+        mLocationNotifier = setupLocationProvider();
         StepDetector mStepDetector = setupStepDetector();
         StepDisplayer mStepDisplayer = setupStepDisplayer();
         PaceNotifier mPaceNotifier = setupPaceNotifier();
@@ -123,9 +135,13 @@ public class SensorService extends Service {
         }
     }
 
+    public void activateLocationListener() {
+        mLocationNotifier.activateLocationListener();
+    }
+
     private static void start(Context context) {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(SensorService.RESTART);
+        broadcastIntent.setAction(WorkerService.RESTART);
         broadcastIntent.setClass(context, StarterBroadcast.class);
         context.sendBroadcast(broadcastIntent);
     }
@@ -142,23 +158,45 @@ public class SensorService extends Service {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    private LocationNotifier setupLocationProvider() {
+        LocationNotifier locationNotifier = new LocationNotifier(getApplicationContext());
+        locationNotifier.registerCallback(new OnLocationUpdated() {
+            @Override
+            public void onUpdate(double longitude, double latitude, short status) {
+                position[0] = longitude;
+                position[1] = latitude;
+                locationLastStatus = status;
+                if (mCallback != null) {
+                    mCallback.locationUpdated(position[0], position[1], locationLastStatus);
+                }
+            }
+        });
+        return locationNotifier;
+    }
+
     private OtherDetector setupOtherDetector() {
         OtherDetector otherDetector = new OtherDetector();
-
         otherDetector.addListener(new OtherListener() {
             @Override
             public void onLightChange(float lightLevel) {
-
+                mLight = lightLevel;
+                if (mCallback != null) {
+                    mCallback.onLightChange(mLight);
+                }
             }
 
             @Override
             public void onGravityChange(float x, float y, float z) {
-
+                mGravity[0] = x;
+                mGravity[1] = y;
+                mGravity[2] = z;
+                if (mCallback != null) {
+                    mCallback.onGravityChange(mGravity[0], mGravity[1], mGravity[2]);
+                }
             }
         });
 
         SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         if (handler == null) {
             handler = new ToastHandler();
         }
@@ -176,6 +214,10 @@ public class SensorService extends Service {
             bundle.putString("message", "Gravity sensor is exists!");
             msg.setData(bundle);
             handler.sendMessage(msg);
+
+            mSensorManager.registerListener(otherDetector,
+                gravity,
+                SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         Sensor light = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
@@ -201,14 +243,11 @@ public class SensorService extends Service {
                     handler.sendMessage(msg);
                 }
             }, 3000);
-        }
 
-        mSensorManager.registerListener(otherDetector,
-                gravity,
-                SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(otherDetector,
+            mSensorManager.registerListener(otherDetector,
                 light,
                 SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         return otherDetector;
     }

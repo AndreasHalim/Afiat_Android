@@ -22,6 +22,7 @@ public class HomeScreen extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListner);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
