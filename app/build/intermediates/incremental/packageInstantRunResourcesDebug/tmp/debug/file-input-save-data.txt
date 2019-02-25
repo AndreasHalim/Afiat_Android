@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Mon Feb 25 18:14:01 WIB 2019
+0.baseType=DIRECTORY
+0.base=/home/nuhaubuntu/Tugas/tugas_pbd/Afiat_Android/app/build/intermediates/merged_assets/debug/mergeDebugAssets/out
+0.path=crashlytics-build.properties
+0.set=ASSET
+count=1

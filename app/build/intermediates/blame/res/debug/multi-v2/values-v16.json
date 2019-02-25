@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/nuhaubuntu/Tugas/tugas_pbd/Afiat_Android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v16/values-v16.xml",
+            "map": [
+                {
+                    "source": "/home/nuhaubuntu/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/11a4b529c1be5e39fafe240652968de1/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "/home/nuhaubuntu/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/5502f4b2af675bc9ddb6db8f3e41ab20/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "223"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "121",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "289"
+                    }
+                }
+            ]
+        }
+    ]
+}
