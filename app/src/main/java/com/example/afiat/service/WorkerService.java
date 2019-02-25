@@ -30,12 +30,12 @@ import java.util.TimerTask;
 public class WorkerService extends Service {
     public static final int WORKER_SERVICE_ID = 2;
     public static final String RESTART = "restart_service";
-    public static Boolean running = false;
-    private static int mStepCount = 0;
-    private static float mSpeedSum = 0;
-    private static int mSpeedCounter = 0;
-    private static float mDistance = 0;
-    private static float mLight = 0;
+    public static Boolean running;
+    private static int mStepCount;
+    private static float mSpeedSum;
+    private static int mSpeedCounter;
+    private static float mDistance;
+    private static float mLight;
     /*
      * mGravity[] = {x-axis, y-axis, z-axis}
      */
@@ -87,6 +87,11 @@ public class WorkerService extends Service {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         startForeground(WORKER_SERVICE_ID, ServiceNotificationBuilder.Build(manager, this));
         running = true;
+        mStepCount = 0;
+        mSpeedSum = 0;
+        mSpeedCounter = 0;
+        mDistance = 0;
+        mLight = 0;
     }
 
     @Override
@@ -132,12 +137,8 @@ public class WorkerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("TEST-SERVICE", "onDestroy");
         if (running) {
-            Log.d("TEST-SERVICE", "onDestroy");
             start(this);
-        } else {
-            Log.d("TEST-SERVICE", "fully destroyed");
         }
     }
 

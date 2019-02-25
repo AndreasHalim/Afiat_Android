@@ -30,12 +30,20 @@ public class AchievementPresenter implements AchievementEvent.Presenter {
     public void onShare() {
         StoreManager manager = StoreManager.getInstance(context);
         AchievementStore store = manager.getAchievement();
-        DecimalFormat df = new DecimalFormat("#.00");
         String twit = "I have been done " +
-                store.getMaxSteps() + " steps, with average speed of" +
-                df.format(store.getHighestSpeed()) + " km/h over " +
-                df.format(store.getLongestDistance()) + " km. Yeay!";
+                store.getMaxSteps() + " steps, with average speed of " +
+                formatFloat(store.getHighestSpeed()) + " km/h over " +
+                formatFloat(store.getLongestDistance()) + " km. Yeay!";
         view.sendTwitterPost(twit);
+    }
+
+    private String formatFloat(float value) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String result = df.format(value);
+        if (value < 1) {
+            return "0" + result;
+        }
+        return result;
     }
 
     @Override

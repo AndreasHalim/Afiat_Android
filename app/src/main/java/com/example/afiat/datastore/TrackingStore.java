@@ -2,6 +2,7 @@ package com.example.afiat.datastore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import static com.example.afiat.datastore.Common.ACHIEVEMENT_KEY;
 import static com.example.afiat.datastore.Common.KEY_LAST_TRACKING_TIME;
@@ -32,6 +33,7 @@ public class TrackingStore extends BasicStore {
         SharedPreferences sharedPref = context.getSharedPreferences(ACHIEVEMENT_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(KEY_LAST_TRACKING_TIME, lastTrackingTime);
+        editor.putBoolean(KEY_TRACKING_SYNC, isSynchronized);
         editor.apply();
     }
 
@@ -39,6 +41,8 @@ public class TrackingStore extends BasicStore {
         SharedPreferences sharedPref = context.getSharedPreferences(ACHIEVEMENT_KEY, Context.MODE_PRIVATE);
         lastTrackingTime = sharedPref.getLong(KEY_LAST_TRACKING_TIME, 0);
         isSynchronized = sharedPref.getBoolean(KEY_TRACKING_SYNC, true);
+        String log = "TrackingStore: data recovered: " + lastTrackingTime + " " + isSynchronized;
+        Log.i("TEST", log);
     }
 
     void flush() {

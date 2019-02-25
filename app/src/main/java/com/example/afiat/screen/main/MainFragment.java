@@ -18,9 +18,9 @@ public class MainFragment extends Fragment implements MainContract.View {
     @BindView(R.id.tv_distance) TextView tvDistance;
     @BindView(R.id.btn_toggle) Button btnToggle;
 
-    private MainEvent bus;
+    private MainBus bus;
 
-    public static MainFragment newInstance(MainEvent bus) {
+    public static MainFragment newInstance(MainBus bus) {
         MainFragment fragment = new MainFragment();
         fragment.bus = bus;
         return fragment;
@@ -75,4 +75,5 @@ public class MainFragment extends Fragment implements MainContract.View {
     public void setToggleName(String message) {
         btnToggle.setText(message);
     }
+
 }

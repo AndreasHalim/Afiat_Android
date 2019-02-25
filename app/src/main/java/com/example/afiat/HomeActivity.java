@@ -20,6 +20,7 @@ import com.example.afiat.screen.achievement.AchievementBus;
 import com.example.afiat.screen.achievement.AchievementFragment;
 import com.example.afiat.screen.achievement.AchievementPresenter;
 import com.example.afiat.screen.main.MainBus;
+import com.example.afiat.screen.main.MainEvent;
 import com.example.afiat.screen.main.MainFragment;
 import com.example.afiat.screen.main.MainPresenter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,13 +28,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends FragmentActivity implements MainEvent.Activity {
     @BindView(R.id.pager) ViewPager viewPager;
     @BindView(R.id.tabs) TabLayout tabs;
     @BindView(R.id.tv_logout) TextView tvLogout;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListner;
+    private PagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class HomeActivity extends FragmentActivity {
 
         setupFirebaseAuth();
 
-        PagerAdapter pagerAdapter = new CustomPagerAdapter(getSupportFragmentManager());
+        pagerAdapter = new CustomPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -112,10 +114,9 @@ public class HomeActivity extends FragmentActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    MainBus mainBus = new MainBus();
+                    MainBus mainBus = new MainBus(HomeActivity.this);
                     MainFragment mainFragment = MainFragment.newInstance(mainBus);
-                    MainPresenter mainPresenter = new MainPresenter(mainFragment, getApplicationContext());
-                    mainBus.setSubscriber(mainPresenter);
+                    new MainPresenter(mainBus, mainFragment, getApplicationContext());
                     return mainFragment;
                 case 1:
                     AchievementBus achievementBus = new AchievementBus();
@@ -140,6 +141,11 @@ public class HomeActivity extends FragmentActivity {
             }
             return null;
         }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
+        }
     }
 
     @Override
@@ -148,4 +154,13 @@ public class HomeActivity extends FragmentActivity {
         mAuth.addAuthStateListener(mAuthListner);
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
+    public void refreshPager() {
+        viewPager.setAdapter(pagerAdapter);
+    }
 }

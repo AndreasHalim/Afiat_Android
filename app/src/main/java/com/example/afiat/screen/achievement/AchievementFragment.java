@@ -58,13 +58,24 @@ public class AchievementFragment extends Fragment implements AchievementContract
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        bus.onStart();
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bus.onShare();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bus.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bus.onDestroy();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.afiat.datastore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import static com.example.afiat.datastore.Common.ACHIEVEMENT_KEY;
 import static com.example.afiat.datastore.Common.KEY_ACHIEVEMENT_SYNC;
@@ -56,6 +57,7 @@ public class AchievementStore extends BasicStore {
         editor.putInt(KEY_MAX_STEPS, maxSteps);
         editor.putFloat(KEY_MAX_SPEED, highestSpeed);
         editor.putFloat(KEY_MAX_DISTANCE, longestDistance);
+        editor.putBoolean(KEY_ACHIEVEMENT_SYNC, isSynchronized);
         editor.apply();
     }
 
@@ -65,6 +67,9 @@ public class AchievementStore extends BasicStore {
         highestSpeed = sharedPref.getFloat(KEY_MAX_SPEED, 0);
         longestDistance = sharedPref.getFloat(KEY_MAX_DISTANCE, 0);
         isSynchronized = sharedPref.getBoolean(KEY_ACHIEVEMENT_SYNC, true);
+        String log = "AchievementStore: data recovered: " + maxSteps + " " + highestSpeed + " " +
+                longestDistance + " " + isSynchronized;
+        Log.i("TEST", log);
     }
 
     void flush() {

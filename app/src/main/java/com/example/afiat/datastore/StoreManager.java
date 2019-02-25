@@ -45,6 +45,7 @@ public class StoreManager {
             instance.persistIdentifier();
         } else {
             instance = new StoreManager(ctx, identifier);
+            instance.persistIdentifier();
         }
 
         ApiUtils.fetchAccount(ctx, identifier, new FetchStoreListener() {

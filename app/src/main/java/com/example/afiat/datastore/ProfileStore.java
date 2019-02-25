@@ -2,6 +2,7 @@ package com.example.afiat.datastore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import static com.example.afiat.datastore.Common.ACHIEVEMENT_KEY;
 import static com.example.afiat.datastore.Common.KEY_HOME_LATITUDE;
@@ -45,14 +46,17 @@ public class ProfileStore extends BasicStore {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putFloat(KEY_HOME_LATITUDE, homeLat);
         editor.putFloat(KEY_HOME_LONGITUDE, homeLng);
+        editor.putBoolean(KEY_PROFILE_SYNC, isSynchronized);
         editor.apply();
     }
 
     void recover() {
         SharedPreferences sharedPref = context.getSharedPreferences(ACHIEVEMENT_KEY, Context.MODE_PRIVATE);
         homeLat = sharedPref.getFloat(KEY_HOME_LATITUDE, 0);
-        homeLng = sharedPref.getFloat(KEY_HOME_LONGITUDE, 0);
+        homeLat = sharedPref.getFloat(KEY_HOME_LONGITUDE, 0);
         isSynchronized = sharedPref.getBoolean(KEY_PROFILE_SYNC, true);
+        String log = "ProfileStore: data recovered: " + homeLat + " " + homeLat + " " + isSynchronized;
+        Log.i("TEST", log);
     }
 
     void flush() {
