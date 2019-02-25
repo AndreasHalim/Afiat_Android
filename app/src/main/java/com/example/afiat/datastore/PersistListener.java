@@ -1,5 +1,5 @@
 package com.example.afiat.datastore;
 
-interface PersistListener {
+public interface PersistListener {
     void onFinish(boolean success);
 }
