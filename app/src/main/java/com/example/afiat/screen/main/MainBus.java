@@ -3,7 +3,7 @@ package com.example.afiat.screen.main;
 public class MainBus implements MainEvent {
     private MainEvent subscriber;
 
-    void setSubscriber(MainEvent subscriber) {
+    public void setSubscriber(MainEvent subscriber) {
         this.subscriber = subscriber;
     }
 

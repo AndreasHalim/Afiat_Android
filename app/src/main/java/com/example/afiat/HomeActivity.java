@@ -1,29 +1,24 @@
 package com.example.afiat;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
-import com.example.afiat.screen.history.HistoryFragment;
+import com.example.afiat.screen.achievement.AchievementBus;
+import com.example.afiat.screen.achievement.AchievementFragment;
+import com.example.afiat.screen.achievement.AchievementPresenter;
 import com.example.afiat.screen.main.MainBus;
 import com.example.afiat.screen.main.MainFragment;
 import com.example.afiat.screen.main.MainPresenter;
 import com.example.afiat.screen.profile.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,12 +83,17 @@ public class HomeActivity extends FragmentActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    MainBus bus = new MainBus();
-                    MainFragment fragment = MainFragment.newInstance(bus);
-                    new MainPresenter(fragment, bus, getApplicationContext());
-                    return fragment;
+                    MainBus mainBus = new MainBus();
+                    MainFragment mainFragment = MainFragment.newInstance(mainBus);
+                    MainPresenter mainPresenter = new MainPresenter(mainFragment, getApplicationContext());
+                    mainBus.setSubscriber(mainPresenter);
+                    return mainFragment;
                 case 1:
-                    return HistoryFragment.newInstance();
+                    AchievementBus achievementBus = new AchievementBus();
+                    AchievementFragment achievementFragment = AchievementFragment.newInstance(achievementBus);
+                    AchievementPresenter achievementPresenter = new AchievementPresenter(achievementFragment, getApplicationContext());
+                    achievementBus.setPresenter(achievementPresenter);
+                    return achievementFragment;
                 case 2:
                     return ProfileFragment.newInstance();
             }

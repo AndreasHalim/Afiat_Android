@@ -121,9 +121,21 @@
 
     <!-- Main Fragment -->
     <string name="steps_title">STEPS</string>
-    <string name="speed_title">METER / HOUR</string>
+    <string name="speed_title">KILOMETER / HOUR</string>
     <string name="distance_title">KILOMETER</string>
     <string name="turn_on">Turn On</string>
     <string name="turn_off">Turn Off</string>
     <string name="default_value">0</string>
+
+    <!-- AchievementStore Fragment -->
+    <string name="share_twitter">Share It!</string>
+    <string name="max_steps_title">MAXIMUM STEPS</string>
+    <string name="max_speed_title">HIGHEST\nAVERAGE OF SPEED</string>
+    <string name="max_speed_subtitle">(kilometer/hour)</string>
+    <string name="max_distance_title">LONGEST DISTANCE</string>
+    <string name="max_distance_subtitle">(kilometer)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

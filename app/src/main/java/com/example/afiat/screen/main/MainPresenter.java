@@ -10,10 +10,9 @@ public class MainPresenter implements MainEvent {
     private ServiceRunner runner;
     private Context context;
 
-    public MainPresenter(MainContract.View view, MainBus bus, Context context) {
+    public MainPresenter(MainContract.View view, Context context) {
         this.view = view;
         this.context = context;
-        bus.setSubscriber(this);
     }
 
     @Override

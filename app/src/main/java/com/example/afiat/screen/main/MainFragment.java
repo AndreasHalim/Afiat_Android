@@ -20,8 +20,6 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private MainEvent bus;
 
-    public MainFragment() { }
-
     public static MainFragment newInstance(MainEvent bus) {
         MainFragment fragment = new MainFragment();
         fragment.bus = bus;
@@ -38,7 +36,6 @@ public class MainFragment extends Fragment implements MainContract.View {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         btnToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,6 +48,12 @@ public class MainFragment extends Fragment implements MainContract.View {
     public void onResume() {
         super.onResume();
         bus.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bus.onDestroy();
     }
 
     @Override
